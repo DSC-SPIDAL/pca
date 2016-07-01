@@ -5,22 +5,31 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.*;
+
 
 public class Pca {
 	
-	public double[][] importFile() throws IOException{
-		Scanner sc = new Scanner(new File("20090716_20100716.csv"));
-		double dataArr[][] = new double[6161][252];
+	public double[][] importFile(String file) throws IOException{
+		double dataArr[][] = new double[6161][6161];
+		
+	
+		Scanner sc = new Scanner(new File(file));
+		//double dataArr[][] = new double[6161][6161];
+		String col= sc.nextLine();
 		for(int i=0; i<6161;i++){
 			String line =  sc.nextLine();
-			String[] vals = line.split("\\s+");
-			for(int j=0; j< 252; j++){
-				dataArr[i][j]= Float.parseFloat(vals[j+2]);
+			String[] vals = line.split(",");
+			
+			for(int j=0; j< 6161; j++){
+				//System.out.println("i is "+i+" , j is "+j);
+				dataArr[i][j]= Double.parseDouble(vals[j]);
 			}
 		}
 		
-		for(int i= 0; i<6161; i++){
+	/*	for(int i= 0; i<6161; i++){
 			double sum=0; 
 			int j=0; 
 			if(j<252){
@@ -31,13 +40,13 @@ public class Pca {
 			}
 			j++;
 			}
-		}
+		}*/
 		return dataArr;
 	}
 	
 	public Matrix SVD() throws IOException{
 		Pca pca = new Pca();
-		double[][] arr= pca.importFile();
+		double[][] arr= pca.importFile("/u/bsairamr/foxfolder/distMat.csv");
 		Matrix mat= new Matrix(arr);
 		SingularValueDecomposition svd= mat.svd();
 		
@@ -47,11 +56,11 @@ public class Pca {
 		
 		
 		Matrix newU = U.getMatrix(0, 6160, 0, 2);
-		Matrix newV = V.getMatrix(0, 2, 0, 2);
+		Matrix newV = V.getMatrix(0, 2, 0, 6160);
 		Matrix newS = S.getMatrix(0, 2, 0, 2);
 		
 		
-		Matrix X = newU.times(newS).times(newV.transpose());
+		Matrix X = newU.times(newS).times(newV);
 		//Matrix Y = X.arrayTimes(V.transpose());
 		
 		System.out.println(X.getRowDimension());
@@ -61,7 +70,7 @@ public class Pca {
 		
 	}
 	
-	public static void main(String[] args) throws IOException {
+/*	public static void main(String[] args) throws IOException {
 		
 		
 		Pca pca= new Pca();
@@ -75,6 +84,6 @@ public class Pca {
 			}
 			fw.write("\n");
 		}
-	}
+	}*/
 
 }
