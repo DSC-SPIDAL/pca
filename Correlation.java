@@ -53,22 +53,26 @@ public class Correlation {
 		
 	}
 	
-	public void PCA() throws IOException{
-		Pca pca= new Pca();
+	public Matrix PCA() throws IOException{
 		
-		//double[][] distArr= pca.importFile("PCA.csv");
-		//Matrix distMat= new Matrix(distArr);
-		Matrix distMat= Matrix.random(4, 4);
+		Pca pca = new Pca();
+		double[][] arr= pca.importFile("/u/bsairamr/foxfolder/distMat.csv");
+		System.out.println("imported file");
+		Matrix distMat= new Matrix(arr);
+		//Matrix distMat= Matrix.random(4, 4);
 		EigenvalueDecomposition decomposition= distMat.eig();
+		System.out.println("calculating vd");
 		Matrix V = decomposition.getV();
 		Matrix D = decomposition.getD();
-		Matrix Q = V; 
-		V = V.getMatrix(0, 3, 0, 1);
-		D = D.getMatrix(0, 1, 0, 3);
-		Q = Q.getMatrix(0, 3, 0,1);
+		Matrix Q = V.transpose(); 
+		V = V.getMatrix(0,6160, 0, 2);
+		D = D.getMatrix(0, 2, 0, 2);
+		Q = Q.getMatrix(0, 2, 0,2);
+		Matrix X = V.times(D).times(Q);
+		System.out.println(X.getRowDimension());
+		System.out.println(X.getColumnDimension());
+		
+		return X;
 	}
 	
-	
-	
-
 }
